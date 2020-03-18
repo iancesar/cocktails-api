@@ -7,4 +7,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get("/", (req, res) => res.json({ ok: true }));
 
-app.listen(8080);
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT);

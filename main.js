@@ -1,16 +1,43 @@
 import express from "express";
 import bodyParser from 'body-parser'
+import firebase from 'firebase'
+import firebaseConfig from './firebase/firebase-config'
+import LoginService from "./services/LoginService";
 
-console.log('ENV!!!!!', process.env.NOME);
 
-const app = express();
+// console.log(firebaseConfig);
 
-app.use(bodyParser.urlencoded({ extended: true }))
+async function start() {
 
-app.get("/", (req, res) => res.json({ 'env': process.env.NOME }));
+    firebase.initializeApp(firebaseConfig);
 
-//oi
+    const app = express();
 
-const PORT = process.env.PORT || 5000
+    app.use(bodyParser.urlencoded({ extended: false }))
 
-app.listen(PORT);
+    app.use(bodyParser.json())
+
+    app.post("/", async (req, res) => {
+
+        console.log(req.body)
+
+        let email = req.body.email;
+        let password = req.body.password;
+
+        let loginService = new LoginService();
+
+        try {
+            let user = await loginService.create(email, password);
+            res.json({ 'uid': user.uid })
+        } catch (error) {
+            res.status(500).json({ 'message': error.message });
+        }
+
+    });
+
+    const PORT = process.env.PORT || 5000
+
+    app.listen(PORT);
+}
+
+start();

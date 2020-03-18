@@ -17,6 +17,10 @@ async function start() {
 
     app.use(bodyParser.json())
 
+    app.get("/", async (req, res) => {
+        res.json({ 'status': 'ok' })
+    });
+
     app.post("/", async (req, res) => {
 
         console.log(req.body)

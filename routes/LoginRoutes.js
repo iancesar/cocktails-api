@@ -1,4 +1,5 @@
 import express from 'express';
+import jwtUtils from '../utils/jwt-utils'
 import LoginService from "../services/LoginService";
 
 let loginService = new LoginService();
@@ -16,7 +17,8 @@ loginRoutes.post("/signUp", async (req, res) => {
 
     loginService.signUp(email, password)
         .then(user => {
-            res.json({ 'uid': user.user.uid })
+            let token = jwtUtils.encode({ uid: user.user.uid });
+            res.json({ 'token': token })
         }).catch(err => {
             res.status(403).json({ 'message': err.message });
         })
@@ -29,13 +31,14 @@ loginRoutes.post("/signIn", async (req, res) => {
 
     loginService.signIn(email, password)
         .then(user => {
-            res.json({ 'uid': user.user.uid })
+            let token = jwtUtils.encode({ uid: user.user.uid });
+            res.json({ 'token': token })
         }).catch(err => {
             res.status(403).json({ 'message': err.message });
         })
 })
 
-loginRoutes.post("/recovery", async (req, res) => {
+loginRoutes.post("/resetPassword", async (req, res) => {
     let email = req.body.email;
 
     loginService.recovery(email)

@@ -14,13 +14,12 @@ loginRoutes.post("/signUp", async (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    try {
-        let user = await loginService.signUp(email, password);
-        res.json({ 'uid': user.uid })
-    } catch (error) {
-        res.status(403).json({ 'message': error.message });
-    }
-
+    loginService.signUp(email, password)
+        .then(user => {
+            res.json({ 'uid': user.user.uid })
+        }).catch(err => {
+            res.status(403).json({ 'message': err.message });
+        })
 });
 
 loginRoutes.post("/signIn", async (req, res) => {
@@ -28,23 +27,23 @@ loginRoutes.post("/signIn", async (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    try {
-        let user = await loginService.signIn(email, password);
-        res.json({ 'uid': user.uid })
-    } catch (error) {
-        res.status(403).json({ 'message': error.message });
-    }
+    loginService.signIn(email, password)
+        .then(user => {
+            res.json({ 'uid': user.user.uid })
+        }).catch(err => {
+            res.status(403).json({ 'message': err.message });
+        })
 })
 
 loginRoutes.post("/recovery", async (req, res) => {
     let email = req.body.email;
 
-    try {
-        let reseted = await loginService.recovery(email);
-        res.json(reseted)
-    } catch (error) {
-        res.status(403).json({ 'message': error.message });
-    }
+    loginService.recovery(email)
+        .then(() => {
+            res.json({ 'reseted': true })
+        }).catch(err => {
+            res.status(403).json({ 'message': err.message });
+        })
 })
 
 loginRoutes.post("/inative", async (req, res) => {

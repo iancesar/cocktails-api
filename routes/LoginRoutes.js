@@ -1,6 +1,8 @@
 import express from 'express';
 import LoginService from "../services/LoginService";
 
+let loginService = new LoginService();
+
 let loginRoutes = express.Router();
 
 loginRoutes.get('/', (req, res) => {
@@ -9,15 +11,11 @@ loginRoutes.get('/', (req, res) => {
 
 loginRoutes.post("/signUp", async (req, res) => {
 
-    console.log(req.body)
-
     let email = req.body.email;
     let password = req.body.password;
 
-    let loginService = new LoginService();
-
     try {
-        let user = await loginService.create(email, password);
+        let user = await loginService.signUp(email, password);
         res.json({ 'uid': user.uid })
     } catch (error) {
         res.status(403).json({ 'message': error.message });
@@ -26,15 +24,27 @@ loginRoutes.post("/signUp", async (req, res) => {
 });
 
 loginRoutes.post("/signIn", async (req, res) => {
-    res.json({ 'message': 'Not implemented' })
-})
 
-loginRoutes.post("/signOut", async (req, res) => {
-    res.json({ 'message': 'Not implemented' })
+    let email = req.body.email;
+    let password = req.body.password;
+
+    try {
+        let user = await loginService.signIn(email, password);
+        res.json({ 'uid': user.uid })
+    } catch (error) {
+        res.status(403).json({ 'message': error.message });
+    }
 })
 
 loginRoutes.post("/recovery", async (req, res) => {
-    res.json({ 'message': 'Not implemented' })
+    let email = req.body.email;
+
+    try {
+        let reseted = await loginService.recovery(email);
+        res.json(reseted)
+    } catch (error) {
+        res.status(403).json({ 'message': error.message });
+    }
 })
 
 loginRoutes.post("/inative", async (req, res) => {

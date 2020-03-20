@@ -1,6 +1,7 @@
 import express from 'express';
 import jwtUtils from '../utils/jwt-utils'
 import LoginService from "../services/LoginService";
+import crypto from 'crypto'
 
 let loginService = new LoginService();
 
@@ -38,6 +39,7 @@ loginRoutes.post("/signIn", async (req, res) => {
         })
 })
 
+
 loginRoutes.post("/resetPassword", async (req, res) => {
     let email = req.body.email;
 
@@ -49,7 +51,16 @@ loginRoutes.post("/resetPassword", async (req, res) => {
         })
 })
 
-loginRoutes.post("/inative", async (req, res) => {
+loginRoutes.post("/generateToken", async (req, res) => {
+    let uid = req.body.uid;
+    const DADOS_CRIPTOGRAFAR = {
+        algoritmo : "aes256",
+        segredo : "chaves",
+        tipo : "hex"
+    };
+    const cipher = crypto.createCipher(DADOS_CRIPTOGRAFAR.algoritmo, DADOS_CRIPTOGRAFAR.segredo);
+    console.log(cipher.final(DADOS_CRIPTOGRAFAR.tipo));
+
     res.json({ 'message': 'Not implemented' })
 })
 
